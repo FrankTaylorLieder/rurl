@@ -14,7 +14,12 @@ The default port is `7878`.
 ## Setup
 
 1. Compile the server and client for the relevant machines.
-1. Put the binaries in the paths.
+    - Manually:
+        - `cargo build`
+        - Put the binaries in the paths.
+    - Using cargo install:
+        - `cargo install --git https://github.com/FrankTaylorLieder/rurl`
+        - This will install both binaries in the standard Cargo path.
 1. On the client Mac, configure `launchd` to be running:
     - Copy the launch plist from `rurls` to `~/Library/LaunchAgents`
     - Adjust the `rurls` path as needed.
@@ -22,6 +27,6 @@ The default port is `7878`.
     - Start: `launchctl start org.lieder.rurls`
     - Stop: `launchctl stop org.lieder.rurls`
     - Unload: `launchctl unload ~/Library/LaunchAgents/org.lieder.rurls.plist`
-1. Set up a forwarded from port from the remote session to the client.
-
+1. Set up a forwarded port from the remote session to the client.
+    - e.g. ssh config: `RemoteForward 7878 localhost:7878`
 
