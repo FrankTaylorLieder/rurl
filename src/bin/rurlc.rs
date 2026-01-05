@@ -14,7 +14,7 @@ fn main() {
 
     let url = &args[1];
     let port: u16 = if args.len() > 2 {
-        args[2].parse().unwrap_or(DEFAULT_PORT)
+        args[2].parse().expect("Could not parse port")
     } else {
         DEFAULT_PORT
     };

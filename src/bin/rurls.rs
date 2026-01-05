@@ -3,9 +3,8 @@ use std::io::{BufRead, BufReader};
 use std::net::{TcpListener, TcpStream};
 use std::process::Command;
 
-fn handle_client(stream: TcpStream) {
-    let peer_addr = stream.peer_addr().unwrap();
-    println!("Connection from {}", peer_addr);
+fn handle_client(stream: TcpStream, id: usize) {
+    println!("Connection open {}", id);
 
     let reader = BufReader::new(stream);
 
@@ -14,16 +13,18 @@ fn handle_client(stream: TcpStream) {
             Ok(url) => {
                 let url = url.trim();
                 if !url.is_empty() {
-                    println!("Opening: {}", url);
+                    println!("Opening on {}: {}", id, url);
                     let _ = Command::new("open").arg(url).spawn();
                 }
             }
             Err(e) => {
-                eprintln!("Error reading line: {}", e);
+                eprintln!("Error reading line on {}: {}", id, e);
                 break;
             }
         }
     }
+
+    println!("Connection closed: {}", id)
 }
 
 const DEFAULT_PORT: u16 = 7878;
@@ -31,7 +32,7 @@ const DEFAULT_PORT: u16 = 7878;
 fn main() {
     let args: Vec<String> = env::args().collect();
     let port = if args.len() > 1 {
-        args[1].parse().unwrap_or(DEFAULT_PORT)
+        args[1].parse().expect("Could not parse port")
     } else {
         DEFAULT_PORT
     };
@@ -41,10 +42,14 @@ fn main() {
 
     println!("Server listening on port {}", port);
 
+    let mut next_id = 0;
+
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                std::thread::spawn(|| handle_client(stream));
+                next_id += 1;
+                let id = next_id;
+                std::thread::spawn(move || handle_client(stream, id));
             }
             Err(e) => {
                 eprintln!("Connection error: {}", e);
