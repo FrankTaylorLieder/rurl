@@ -11,6 +11,36 @@ opened). This assumed to be a Mac and uses `open` to open the URL.
 
 The default port is `7878`.
 
+## Security
+
+`rurls` includes URL validation to prevent command injection attacks from remote machines:
+
+- **Default mode**: Only allows `http://` and `https://` URLs
+- **Permissive mode**: Use `--allow-all-schemes` to allow all valid URL schemes (`file://`, `ftp://`, custom schemes, etc.)
+- **Always protected**: Command flag injection (inputs starting with `-`) is blocked in all modes
+
+### Command Line Options
+
+```bash
+# Start server with default settings (http/https only, port 7878)
+rurls
+
+# Custom port
+rurls --port 8080
+rurls -p 8080
+
+# Allow all valid URL schemes (use only with trusted remote machines)
+rurls --allow-all-schemes
+
+# Combine options
+rurls --port 8080 --allow-all-schemes
+
+# Show help
+rurls --help
+```
+
+**Recommendation**: Use default mode for untrusted remote machines. Only use `--allow-all-schemes` when you control and trust the remote machine.
+
 ## Setup
 
 1. Compile the server and client for the relevant machines.
@@ -23,6 +53,7 @@ The default port is `7878`.
 1. On the client Mac, configure `launchd` to be running:
     - Copy the launch plist from `rurls` to `~/Library/LaunchAgents`
     - Adjust the `rurls` path as needed.
+    - (Optional) Add `--allow-all-schemes` or other flags to the ProgramArguments array in the plist
     - Load: `launchctl load ~/Library/LaunchAgents/org.lieder.rurls.plist`
     - Start: `launchctl start org.lieder.rurls`
     - Stop: `launchctl stop org.lieder.rurls`
