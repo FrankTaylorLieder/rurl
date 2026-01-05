@@ -30,3 +30,17 @@ The default port is `7878`.
 1. Set up a forwarded port from the remote session to the client.
     - e.g. ssh config: `RemoteForward 7878 localhost:7878`
 
+## Editor integration
+
+To get `nvim` to use this for the `gx` command, add the following:
+
+```
+-- Enable remote URL opening on an SSH session
+-- See: https://github.com/FrankTaylorLieder/rurl
+if vim.env.SSH_CONNECTION then
+  vim.ui.open = function(path)
+    vim.fn.jobstart({ "rurlc", path }, { detach = true })
+  end
+end
+```
+
