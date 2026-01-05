@@ -15,6 +15,6 @@
     <key>StandardOutPath</key>
     <string>/tmp/rurls.log</string>
     <key>StandardErrorPath</key>
-    <string>/tmp/rurls.err</string>
+    <string>/tmp/rurls.log</string>
 </dict>
 </plist>
